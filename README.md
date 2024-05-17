@@ -6,7 +6,7 @@ cd server
 
 yarn install
 
-node ./server/app.js
+node ./app.js
 
 ### fe
 
