@@ -6,6 +6,7 @@ const SIZE = 1024 * 1024; // 文件块的大小
 
 function App() {
   const [file, setFile] = useState(0);
+  const [fileBase64, setFileBase64] = useState("");
   const [uploadNum, setUploadNum] = useState(0);
   const [chunks, setChunks] = useState([]); // 所有分块
   const chunkCount = useMemo(() => Math.ceil(file?.size / SIZE), [file.size]);
@@ -30,6 +31,10 @@ function App() {
   }, [chunkCount]);
 
   const handleFileChange = (e) => {
+    console.log("file", e.target.files[0]);
+    fileToBase64(e.target.files[0], (base64) => {
+      setFileBase64(base64);
+    });
     setFile(e.target.files[0]);
   };
 
@@ -42,8 +47,10 @@ function App() {
       formData.append("file", chunks[i]);
       formData.append("index", i);
       formData.append("hash", hashRef.current);
+      // formData.append("fileBase64", fileBase64);
       try {
         await axios.post("http://localhost:3000/upload", formData);
+        setUploadNum(i);
         if (isPause.current) {
           console.log("pause");
           break;
@@ -51,7 +58,6 @@ function App() {
       } catch {
         break;
       } finally {
-        setUploadNum(i);
       }
     }
   };
@@ -72,6 +78,14 @@ function App() {
 
   const handlePause = () => {
     isPause.current = true;
+  };
+
+  const fileToBase64 = (file, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      callback(reader.result);
+    });
+    reader.readAsDataURL(file);
   };
 
   return (

@@ -87,6 +87,10 @@ app.post("/merge", (req, res) => {
 
     // 将读取流的内容写入到写入流中
     readStream.pipe(writeStream, { end: false });
+    if (index + 1 >= chunks.length) {
+      const file = path.resolve(__dirname, `uploads/${filename}`);
+      console.log(file);
+    }
   }
 
   // 开始读取第一个文件块
