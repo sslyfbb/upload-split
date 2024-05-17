@@ -81,7 +81,13 @@ function App() {
         disabled={!file}
         onClick={isPause.current ? handleUpload : handlePause}
       >
-        {isPause.current ? (uploadNum > 0 ? "暂停" : "上传") : "继续"}
+        {isPause.current
+          ? uploadNum > 0
+            ? "暂停"
+            : "上传"
+          : uploadNum >= chunkCount
+          ? "上传完成"
+          : "继续"}
       </button>
       <h2>
         上传进度为：
